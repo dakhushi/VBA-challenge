@@ -1,0 +1,77 @@
+Sub Summary_Greatest_Values()
+    Dim ws As Worksheet
+    Dim LastRow As Long
+    Dim i As Long
+    
+    Dim Percent_change As Double
+    Dim Greatest_Pct_Increase As Double
+    Dim Greatest_Pct_Increase_Ticker As String
+    
+    Dim Greatest_pct_Decrease As Double
+    Dim Greatest_pct_Decrease_Ticker As String
+    
+    Dim Greatest_Total_Volume As Double
+    Dim Greatest_Total_Volume_Ticker As String
+    
+    Dim Volume As Double
+    
+    For Each ws In Worksheets
+        ' Inserting columns for Summary table
+        ws.Range("R1").EntireColumn.Insert
+        ws.Cells(1, 18).Value = "Ticker"
+        
+        ws.Range("S1").EntireColumn.Insert
+        ws.Cells(1, 19).Value = "Value"
+        
+        ' Defining headers for summary table
+        ws.Cells(2, 17).Value = "Greatest % Increase"
+        ws.Cells(3, 17).Value = "Greatest % Decrease"
+        ws.Cells(4, 17).Value = "Greatest Total Volume"
+        
+        LastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+        
+        ' Giving Counter for greatest values
+        Greatest_Pct_Increase = -1
+        Greatest_pct_Decrease = 1
+        Greatest_Total_Volume = 0
+        
+        ' Loopping through all rows to find greatest values
+        For i = 2 To LastRow
+            Percent_change = ws.Cells(i, 12).Value
+            Volume = ws.Cells(i, 7).Value
+            
+            ' Checking for greatest percent increase
+            If Percent_change > Greatest_Pct_Increase Then
+                Greatest_Pct_Increase = Percent_change
+                Greatest_Pct_Increase_Ticker = ws.Cells(i, 1).Value
+            End If
+            
+            ' Checking for greatest percent decrease
+            If Percent_change < Greatest_pct_Decrease Then
+                Greatest_pct_Decrease = Percent_change
+                Greatest_pct_Decrease_Ticker = ws.Cells(i, 1).Value
+            End If
+            
+            ' Checking for greatest total volume
+            If Volume > Greatest_Total_Volume Then
+                Greatest_Total_Volume = Volume
+                Greatest_Total_Volume_Ticker = ws.Cells(i, 1).Value
+            End If
+        
+        Next i
+        
+        ' Printing the greatest values in Summary table
+        ws.Cells(2, 18).Value = Greatest_Pct_Increase_Ticker
+        ws.Cells(3, 18).Value = Greatest_pct_Decrease_Ticker
+        ws.Cells(4, 18).Value = Greatest_Total_Volume_Ticker
+        
+        ws.Cells(2, 19).Value = Greatest_Pct_Increase
+        ws.Cells(3, 19).Value = Greatest_pct_Decrease
+        ws.Cells(4, 19).Value = Greatest_Total_Volume
+        
+        ' Formatting the columns to Autofit the values
+        ws.Columns("Q:S").AutoFit
+    
+    Next ws
+    
+End Sub
